@@ -3,15 +3,15 @@ import pygame
 
 class CharacterInterface(ABC):
     @abstractmethod
+    def dibujar(self, surface: pygame.Surface):
+        pass
+    
+    @abstractmethod
     def mover(self):
         pass
 
     @abstractmethod
-    def derrota(self):
-        pass
-
-    @abstractmethod
-    def dibujar(self, surface: pygame.Surface):
+    def perder(self):
         pass
 
     @abstractmethod

@@ -13,4 +13,4 @@ class Constantes:
     IMAGES_PATH = "Sprite"
 
     # Fuente de texto
-    FONT_LOST = None  # Se asignará después de inicializar Pygame
+    FONT_LOST = None  

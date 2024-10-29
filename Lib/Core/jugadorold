@@ -34,23 +34,6 @@ class Jugador(CharacterInterface):
         if not self.is_jumping and not self.is_attacking:
             self.image_index = (self.image_index + 1) % len(self.images["mover"])
             self.image = self.images["mover"][self.image_index]
-        if self.is_jumping:
-            self.rect.y += self.jump_offset
-            self.jump_offset += self.gravity
-            if self.image_index < len(self.images["saltar"]):
-                self.image = self.images["saltar"][self.image_index]
-                self.image_index += 1
-            if self.rect.y >= 400:  
-                self.rect.y = 400
-                self.is_jumping = False
-                self.image_index = 0
-        if self.is_attacking:
-            if self.image_index < len(self.images["atacar"]):
-                self.image = self.images["atacar"][self.image_index]
-                self.image_index += 1
-            else:
-                self.is_attacking = False
-                self.image_index = 0
 
     def ganar(self):
         # Continua nomas
@@ -72,8 +55,25 @@ class Jugador(CharacterInterface):
             self.is_jumping = True
             self.jump_offset = -self.jump_speed
             self.image_index = 0
+        if self.is_jumping:
+            self.rect.y += self.jump_offset
+            self.jump_offset += self.gravity
+            if self.image_index < len(self.images["saltar"]):
+                self.image = self.images["saltar"][self.image_index]
+                self.image_index += 1
+            if self.rect.y >= 400:  
+                self.rect.y = 400
+                self.is_jumping = False
+                self.image_index = 0
 
     def atacar(self):
         if not self.is_attacking:
             self.is_attacking = True
             self.image_index = 0 
+        if self.is_attacking:
+            if self.image_index < len(self.images["atacar"]):
+                self.image = self.images["atacar"][self.image_index]
+                self.image_index += 1
+            else:
+                self.is_attacking = False
+                self.image_index = 0
