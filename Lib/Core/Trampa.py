@@ -5,7 +5,7 @@ from Lib.Var.Constantes import Constantes
 
 class Trampa:
     def __init__(self):
-        self.image = pygame.image.load(os.path.join(Constantes.IMAGES_PATH, "trampa.png")).convert_alpha()
+        self.image = pygame.image.load(os.path.join(Constantes.images_Trampa, "trampa.png")).convert_alpha()
         self.rect = self.image.get_rect(topleft=(800, 400)) 
         self.is_active = True
 
@@ -20,8 +20,6 @@ class Trampa:
 
     def destruir(self):
         self.is_active = False
-
-
 
     def perder(self):
         # Continua nomas

@@ -1,3 +1,4 @@
+# main.py
 import pygame
 import os
 import random
@@ -5,92 +6,79 @@ from Lib.Core.Jugador import Jugador
 from Lib.Core.Enemigo import Enemigo
 from Lib.Core.Trampa import Trampa  
 from Lib.Var.Constantes import Constantes
+from Lib.Color.Colors import Colors
+from Lib.Var.Var import Var  
 
 # Inicializar Pygame
 pygame.init()
 
-#region Configuración de la pantalla
+#region Inicialización
 
 window = pygame.display.set_mode((Constantes.Ancho, Constantes.Alto))
 pygame.display.set_caption("Mega-Runner")
 fuente_path = os.path.join("Lib", "Font", "megaman_2.ttf")
 Constantes.FONT_LOST = pygame.font.Font(fuente_path, 40)
-
-#endregion
-
-#region Variables globales
-
-enemigos = []
-trampas = []  
-contador_enemigos = 0
-contador_trampas = 0 
-contador_acciones = 0 
-fondo_velocidad = 2  
-nivel_actual = 1 
-mostrar_level_up = False  
-tiempo_level_up = 0  
-perdio = False  
-jugador = None  
-
-# Variables para el estado de pausa
-juego_en_pausa = False  
-
-# Cargar imágenes de los botones
-boton_play = pygame.image.load(os.path.join(Constantes.IMAGES_PATH, "play.png")).convert_alpha()
-boton_hard = pygame.image.load(os.path.join(Constantes.IMAGES_PATH, "hard.png")).convert_alpha()
-
-# Posiciones de los botones
-boton_y = Constantes.Alto - 10 - boton_play.get_height()
-boton_play_rect = boton_play.get_rect(center=(Constantes.Ancho // 2 - boton_play.get_width() - 15, boton_y))
-boton_hard_rect = boton_hard.get_rect(center=(Constantes.Ancho // 2 + boton_hard.get_width() + 15, boton_y))
+# Instanciar la clase Var
+vars = Var()  
+vars.cargar_recursos()  
 
 #endregion
 
 #region Funciones
 
 def cargar_fondo():
-    fondo = pygame.image.load(os.path.join(Constantes.IMAGES_PATH, "fondo.png")).convert_alpha()
+    fondo = pygame.image.load(os.path.join(Constantes.images_Fondo, "fondo.png")).convert_alpha()
     return fondo, fondo.get_rect(), fondo.get_rect(topleft=(fondo.get_rect().width, 0))
 
 def reiniciar_juego():
-    global jugador, perdio, contador_enemigos, enemigos, contador_trampas, trampas, contador_acciones, fondo_velocidad, nivel_actual, mostrar_level_up, tiempo_level_up
-    jugador = Jugador()
-    perdio = False
-    contador_enemigos = 0
-    contador_trampas = 0
-    contador_acciones = 0  
-    enemigos.clear()
-    trampas.clear()  
-    fondo_velocidad = 2  
-    nivel_actual = 1  
-    mostrar_level_up = False  
-    tiempo_level_up = 0  
+    global vars  # Usar la instancia de Var
+    vars.jugador = Jugador()
+    vars.perdio = False
+    vars.contador_enemigos = 0
+    vars.contador_trampas = 0
+    vars.contador_acciones = 0  
+    vars.enemigos.clear()
+    vars.trampas.clear()  
+    vars.fondo_velocidad = 2  
+    vars.nivel_actual = 1  
+    vars.mostrar_level_up = False  
+    vars.tiempo_level_up = 0  
+    vars.vidas = 3
 
 def mostrar_mensajes():
-    global mostrar_level_up, tiempo_level_up  
-    nivel_texto = pygame.font.Font(fuente_path, 15).render(f"Nivel: {nivel_actual}", True, Constantes.BLUE)
+    global vars  # Usar la instancia de Var
+    nivel_texto = pygame.font.Font(fuente_path, 15).render(f"Nivel: {vars.nivel_actual}", True, Colors.BLUE)
     window.blit(nivel_texto, (5, 5)) 
     
-    if mostrar_level_up:
-        level_up_texto = Constantes.FONT_LOST.render("Level Up!", True, Constantes.BLUE)
+    velocidad_texto = pygame.font.Font(fuente_path, 10).render(f"Velocidad: {int(vars.fondo_velocidad)}", True, Colors.RED)
+    window.blit(velocidad_texto, (600, 5))
+
+    controles_texto = pygame.font.Font(fuente_path, 9).render(f"Controles: 'Espacio' para saltar y 'P' para golpear", True, Colors.BLACK)
+    window.blit(controles_texto, (5, 580)) 
+
+    for i in range(vars.vidas):
+        window.blit(vars.vida_img, vars.vidas_posiciones[i])
+
+    if vars.mostrar_level_up:
+        level_up_texto = Constantes.FONT_LOST.render("Level Up!", True, Colors.BLUE)
         window.blit(level_up_texto, level_up_texto.get_rect(center=(Constantes.Ancho // 2, Constantes.Alto // 2)))
     
-    if mostrar_level_up and pygame.time.get_ticks() > tiempo_level_up:
-        mostrar_level_up = False  
+    if vars.mostrar_level_up and pygame.time.get_ticks() > vars.tiempo_level_up:
+        vars.mostrar_level_up = False  
 
-    if perdio:
-        texto_perdida = Constantes.FONT_LOST.render("Perdiste", True, Constantes.RED)
-        texto_reintentar = pygame.font.Font(fuente_path, 25).render("Presione R para jugar de nuevo", True, Constantes.RED)
+    if vars.perdio:
+        texto_perdida = Constantes.FONT_LOST.render("Perdiste", True, Colors.RED)
+        texto_reintentar = pygame.font.Font(fuente_path, 25).render("Presione 'R' para jugar de nuevo", True, Colors.RED)
         window.blit(texto_perdida, texto_perdida.get_rect(center=(Constantes.Ancho // 2, Constantes.Alto // 2 - 20)))
         window.blit(texto_reintentar, texto_reintentar.get_rect(center=(Constantes.Ancho // 2, Constantes.Alto // 2 + 20)))
 
 def gestionar_enemigos():
-    global contador_enemigos, fondo_velocidad
+    global vars  # Usar la instancia de Var
     tipos_enemigos = ["tortuga_verde", "tortuga_roja", "volador"]
     tipo_enemigo = random.choice(tipos_enemigos)
     nuevo_enemigo = Enemigo(tipo_enemigo)
-    contador_enemigos += 1
-    nuevo_enemigo.velocidad *= (fondo_velocidad*0.3)
+    vars.contador_enemigos += 1
+    nuevo_enemigo.velocidad *= (vars.fondo_velocidad * 0.3)
     return nuevo_enemigo
 
 def gestionar_trampas():
@@ -105,55 +93,58 @@ def mover_fondo(fondo_rect1, fondo_rect2, velocidad):
         fondo_rect2.x = fondo_rect1.right
 
 def gestionar_colisiones():
-    global perdio, contador_acciones
+    global vars  # Usar la instancia de Var
 
-    for enemigo in enemigos[:]:  
+    for enemigo in vars.enemigos[:]:  
         enemigo.mover()
         if enemigo.rect.left < 0:
-            contador_acciones += 1  
-            enemigos.remove(enemigo) 
-        elif enemigo.is_active and enemigo.rect.colliderect(jugador.rect):
-            if jugador.is_attacking:
+            vars.contador_acciones += 1  
+            vars.enemigos.remove(enemigo) 
+        elif enemigo.is_active and enemigo.rect.colliderect(vars.jugador.rect):
+            if vars.jugador.is_attacking:
                 enemigo.perder()
-                enemigos.remove(enemigo)  
-                contador_acciones += 1  
+                vars.enemigos.remove(enemigo)  
+                vars.contador_acciones += 1  
             else:
                 enemigo.destruir()
-                jugador.perder()
-                perdio = True
+                vars.vidas -= 1  
+                if vars.vidas <= 0: 
+                    vars.jugador.perder()
+                    vars.perdio = True
                 break 
-    for trampa in trampas[:]:  
-        trampa.mover(fondo_velocidad)  
+    for trampa in vars.trampas[:]:  
+        trampa.mover(vars.fondo_velocidad)  
         if trampa.rect.right < 0:
-            trampas.remove(trampa)  
-        if trampa.is_active and trampa.rect.colliderect(jugador.rect):
-            jugador.perder() 
-            perdio = True
+            vars.trampas.remove(trampa)  
+        if trampa.is_active and trampa.rect.colliderect(vars.jugador.rect):
+            vars.vidas -= 1  
+            if vars.vidas <= 0:  
+                vars.jugador.perder() 
+                vars.perdio = True
             break
 
 def aumentar_velocidad():
-    global fondo_velocidad, contador_acciones, nivel_actual, mostrar_level_up, tiempo_level_up
-    if contador_acciones >= 5:
-        contador_acciones = 0          
-        fondo_velocidad *= 1.05   # Esto aumenta la velocidad de cada enemigo
-        nivel_actual += 1
-        # Configurar Level Up visual
-        mostrar_level_up = True
-        tiempo_level_up = pygame.time.get_ticks() + 2000  
+    global vars  # Usar la instancia de Var
+    if vars.contador_acciones >= 5:
+        vars.contador_acciones = 0          
+        vars.fondo_velocidad *= 1.05   
+        vars.nivel_actual += 1
+        vars.mostrar_level_up = True
+        vars.tiempo_level_up = pygame.time.get_ticks() + 2000  
 
 def manejar_botones(pos):
-    global juego_en_pausa, fondo_velocidad
-    if boton_play_rect.collidepoint(pos):
-        juego_en_pausa = not juego_en_pausa  
-    elif boton_hard_rect.collidepoint(pos):
-        fondo_velocidad *= 1.05  
+    global vars  # Usar la instancia de Var
+    if vars.boton_play_rect.collidepoint(pos):
+        vars.juego_en_pausa = not vars.juego_en_pausa  
+    elif vars.boton_hard_rect.collidepoint(pos):       
+        vars.fondo_velocidad *= 1.2  
 
 #endregion
 
-#region  Bucle principal
+#region Bucle principal
 
 def bucle_principal():
-    global contador_enemigos, contador_trampas, perdio, enemigos, trampas, contador_acciones, fondo_velocidad, nivel_actual, mostrar_level_up, tiempo_level_up  
+    global vars  # Usar la instancia de Var porq saque las vars del main
     fondo, fondo_rect1, fondo_rect2 = cargar_fondo()
     reiniciar_juego()
 
@@ -167,37 +158,37 @@ def bucle_principal():
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    jugador.saltar()
+                    vars.jugador.saltar()
                 elif event.key == pygame.K_p:
-                    jugador.atacar()
-                elif event.key == pygame.K_r and perdio:
+                    vars.jugador.atacar()
+                elif event.key == pygame.K_r and vars.perdio:
                     reiniciar_juego()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 manejar_botones(event.pos)
             elif event.type == pygame.USEREVENT + 1:
-                enemigos.append(gestionar_enemigos())
+                vars.enemigos.append(gestionar_enemigos())
             elif event.type == pygame.USEREVENT + 2:  
-                trampas.append(gestionar_trampas())
+                vars.trampas.append(gestionar_trampas())
 
-        if not perdio and not juego_en_pausa:
-            jugador.mover()
+        if not vars.perdio and not vars.juego_en_pausa:
+            vars.jugador.mover()
             gestionar_colisiones()          
             aumentar_velocidad()
-            mover_fondo(fondo_rect1, fondo_rect2, fondo_velocidad)
+            mover_fondo(fondo_rect1, fondo_rect2, vars.fondo_velocidad)
 
         window.blit(fondo, fondo_rect1)
         window.blit(fondo, fondo_rect2)
-        jugador.dibujar(window)
-        for enemigo in enemigos:
+        vars.jugador.dibujar(window)
+        for enemigo in vars.enemigos:
             enemigo.dibujar(window)
-        for trampa in trampas:  
+        for trampa in vars.trampas:  
             trampa.dibujar(window)
 
         mostrar_mensajes()
 
         # Dibujar botones
-        window.blit(boton_play, boton_play_rect)
-        window.blit(boton_hard, boton_hard_rect)
+        window.blit(vars.boton_play, vars.boton_play_rect)
+        window.blit(vars.boton_hard, vars.boton_hard_rect)
         
         pygame.display.flip()
         pygame.time.delay(50)

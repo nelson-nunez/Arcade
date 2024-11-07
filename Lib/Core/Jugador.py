@@ -1,18 +1,17 @@
 import pygame
 import os
-from Lib.Var.Constantes import Constantes  # Asegúrate de importar las constantes
+from Lib.Var.Constantes import Constantes 
 from Lib.Core.CharacterInterface import CharacterInterface
 
 class Jugador(CharacterInterface):
     def __init__(self):
         # Carga de imágenes
-        images_path = os.path.join(Constantes.IMAGES_PATH)
         self.images = {
-            "quieto": pygame.image.load(os.path.join(images_path, "1.png")).convert_alpha(),
-            "mover": [pygame.image.load(os.path.join(images_path, f"{i}.png")).convert_alpha() for i in range(2, 5)],
-            "saltar": [pygame.image.load(os.path.join(images_path, f"{i}.png")).convert_alpha() for i in range(5, 8)],
-            "atacar": [pygame.image.load(os.path.join(images_path, f"{i}.png")).convert_alpha() for i in [8, 9, 10, 11, 12, 11, 10, 9, 8]],
-            "perder": [pygame.image.load(os.path.join(images_path, f"d{i}.png")).convert_alpha() for i in range(1, 3)]
+            "quieto": pygame.image.load(os.path.join(Constantes.images_Jugador, "1.png")).convert_alpha(),
+            "mover": [pygame.image.load(os.path.join(Constantes.images_Jugador, f"{i}.png")).convert_alpha() for i in range(2, 5)],
+            "saltar": [pygame.image.load(os.path.join(Constantes.images_Jugador, f"{i}.png")).convert_alpha() for i in range(5, 8)],
+            "atacar": [pygame.image.load(os.path.join(Constantes.images_Jugador, f"{i}.png")).convert_alpha() for i in [8, 9, 10, 11, 12, 11, 10, 9, 8]],
+            "perder": [pygame.image.load(os.path.join(Constantes.images_Jugador, f"d{i}.png")).convert_alpha() for i in range(1, 3)]
         }
         
         # Configuración inicial
@@ -61,7 +60,7 @@ class Jugador(CharacterInterface):
                 self.image_index = 0
 
     def ganar(self):
-        # Continua nomas
+        # Continua porque nose que iba a poner acá
         pass
 
     def perder(self):
