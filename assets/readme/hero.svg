@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="100%" role="img" aria-labelledby="t d">
+  <title id="t">Mega-Runner</title>
+  <desc id="d">Banner retro: título Mega-Runner, endless runner en Python con Pygame, sobre un paisaje de pistas con enemigos y una trampa.</desc>
+  <style>
+    :root { --bg:#0b1d3a; --bg2:#12305f; --fg:#f4f8ff; --pri:#38b6ff; --acc:#ffd23f; --mut:#9db7dd; --gnd:#1c4a8a; --bad:#ff5a5f; }
+    @media (prefers-color-scheme: light) {
+      :root { --bg:#dff0ff; --bg2:#b9dcff; --fg:#0b1d3a; --pri:#0a63c9; --acc:#c77d00; --mut:#2f4f80; --gnd:#6fa6e6; --bad:#d6252b; }
+    }
+    .bg1 { fill:var(--bg); } .bg2 { fill:var(--bg2); }
+    .title { font:900 104px "Courier New", ui-monospace, Consolas, monospace; fill:var(--fg); letter-spacing:4px; }
+    .shadow { font:900 104px "Courier New", ui-monospace, Consolas, monospace; fill:var(--pri); letter-spacing:4px; }
+    .sub { font:700 28px "Courier New", ui-monospace, Consolas, monospace; fill:var(--acc); letter-spacing:2px; }
+    .tag { font:600 22px "Courier New", ui-monospace, Consolas, monospace; fill:var(--mut); }
+    .gnd { fill:var(--gnd); } .pri { fill:var(--pri); } .acc { fill:var(--acc); } .bad { fill:var(--bad); }
+    .run { animation: bob 0.5s steps(2) infinite; }
+    .scroll { animation: sc 6s linear infinite; }
+    @keyframes bob { 50% { transform:translateY(-6px); } }
+    @keyframes sc { from { transform:translateX(0); } to { transform:translateX(-120px); } }
+    @media (prefers-reduced-motion: reduce) { .run, .scroll { animation:none; } }
+  </style>
+  <rect class="bg1" width="1200" height="420"/>
+  <rect class="bg2" y="250" width="1200" height="110"/>
+  <g class="acc" opacity=".9"><rect x="90" y="60" width="8" height="8"/><rect x="400" y="30" width="8" height="8"/><rect x="760" y="55" width="8" height="8"/><rect x="1100" y="40" width="8" height="8"/><rect x="980" y="110" width="8" height="8"/></g>
+
+  <text class="shadow" x="86" y="186">MEGA-RUNNER</text>
+  <text class="title" x="80" y="180">MEGA-RUNNER</text>
+  <text class="sub" x="84" y="228">ENDLESS RUNNER · PYTHON + PYGAME</text>
+  <text class="tag" x="84" y="272">Salta, golpea, sobrevive. Cada 5 aciertos sube el nivel.</text>
+
+  <!-- suelo -->
+  <rect class="gnd" y="360" width="1200" height="60"/>
+  <g class="scroll" fill="var(--bg)">
+    <rect x="0" y="380" width="60" height="8"/><rect x="120" y="380" width="60" height="8"/><rect x="240" y="380" width="60" height="8"/><rect x="360" y="380" width="60" height="8"/><rect x="480" y="380" width="60" height="8"/><rect x="600" y="380" width="60" height="8"/><rect x="720" y="380" width="60" height="8"/><rect x="840" y="380" width="60" height="8"/><rect x="960" y="380" width="60" height="8"/><rect x="1080" y="380" width="60" height="8"/><rect x="1200" y="380" width="60" height="8"/>
+  </g>
+
+  <!-- jugador -->
+  <g class="run">
+    <rect class="pri" x="150" y="304" width="40" height="40"/>
+    <rect class="pri" x="158" y="290" width="24" height="16"/>
+    <rect class="acc" x="166" y="296" width="16" height="6"/>
+    <rect class="pri" x="146" y="344" width="16" height="16"/><rect class="pri" x="178" y="344" width="16" height="16"/>
+  </g>
+  <!-- enemigo -->
+  <g>
+    <rect class="bad" x="640" y="330" width="44" height="30"/>
+    <rect class="acc" x="684" y="338" width="14" height="22"/>
+    <rect fill="var(--bg)" x="670" y="338" width="6" height="6"/>
+  </g>
+  <!-- volador -->
+  <g class="run">
+    <rect class="acc" x="880" y="260" width="38" height="26"/>
+    <rect class="bad" x="866" y="250" width="14" height="14"/><rect class="bad" x="918" y="250" width="14" height="14"/>
+  </g>
+  <!-- trampa -->
+  <g class="bad"><polygon points="1010,360 1030,328 1050,360"/><polygon points="1050,360 1070,328 1090,360"/></g>
+</svg>
