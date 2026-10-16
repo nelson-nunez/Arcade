@@ -69,22 +69,8 @@ Sprite/                 animaciones del jugador, enemigos, fondo, iconos y tramp
 GuiaTP/                 consignas del trabajo práctico (PDF y DOCX)
 ```
 
-<details>
-<summary><b>Detalles de diseño</b></summary>
-
-- `Jugador`, `Enemigo` y `Trampa` implementan una interfaz común (`CharacterInterface`) con `dibujar`, `mover`, `ganar`, `perder` y `destruir`.
-- El estado compartido (vidas, nivel, velocidad del fondo, listas de enemigos y trampas) vive en la clase `Var`.
-- El fondo hace scroll infinito con dos copias de la imagen que se alternan.
-- Ventana de 800×600 px; el juego corre con una pausa fija de 50 ms por cuadro.
-
-</details>
-
 ## Contexto académico
 
-Proyecto de la cursada de **Programación de Videojuegos / Programación 2** en la UAI (2024). Aplica diseño de niveles, estructuras de datos, manejo de entradas y salidas, y programación orientada a objetos.
+Proyecto de la cursada de **Programación de Videojuegos / Programación 2** en la UAI (2024). 
+Aplica diseño de niveles, estructuras de datos, manejo de entradas y salidas, y programación orientada a objetos.
 
-**Autor:** Nelson Nuñez
-
-## Licencia
-
-TODO: el repositorio no incluye archivo de licencia; agregá uno si querés que otras personas puedan reutilizar el código.
